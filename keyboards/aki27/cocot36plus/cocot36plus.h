@@ -57,15 +57,24 @@ enum cocot_keycodes {
     SCRL_MO,
     SCRL_TO,
     SCRL_IN,
+    KC_MY_SCR, // スクロール
+    KC_TO_CLICKABLE_INC, // マウスレイヤーが有効になるまでの待機時間を増やす
+    KC_TO_CLICKABLE_DEC, // マウスレイヤーが有効になるまでの待機時間を減らす
+    KC_SCROLL_DIR_V, // スクロールの縦軸を反転
+    KC_SCROLL_DIR_H, // スクロールの横軸を反転
+    KC_MOUSE_LAYER_LOCK, // マウスレイヤーを解除する挙動を無効化する(オンにするとLayer Switchingで切り替える挙動)
+    KC_TG_OS, // OS切り替え
+    KC_TG_01,
+    KC_TG_02,
 };
 
-#define CPI_SW USER00
-#define SCRL_SW USER01
-#define ROT_R15 USER02
-#define ROT_L15 USER03
-#define SCRL_MO USER04
-#define SCRL_TO USER05
-#define SCRL_IN USER06
+#define CPI_SW QK_KB_0
+#define SCRL_SW QK_KB_1
+#define ROT_R15 QK_KB_2
+#define ROT_L15 QK_KB_3
+#define SCRL_MO QK_KB_4
+#define SCRL_TO QK_KB_5
+#define SCRL_IN QK_KB_6
 
 
 

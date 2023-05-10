@@ -19,9 +19,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include "quantum.h"
 
-#define LW_LNG2 KC_LANG2//LT(1,KC_LANG2)  // lower
-#define RS_LNG1 KC_LANG1//LT(2,KC_LANG1)  // raise
-#define DEL_ALT KC_DEL//ALT_T(KC_DEL)
+
+// Layer
+#define L1_ENT LT(1, KC_ENT)
+#define L2_SPC LT(2, KC_SPC)
+// Modifier-Tap
+#define MT_S_JA LSFT_T(KC_LNG1)
+#define MT_G_EN LGUI_T(KC_LNG2)
+#define MT_C_EN LCTL_T(KC_LNG2)
+#define MT_A_SH LALT_T(KC_SLSH)
+#define MT_A_BS LALT_T(KC_BSPC)
+#define MT_A_JA LALT_T(KC_LNG1)
+#define MT_S_BS LSFT_T(KC_BSPC)
+// Modifiers
+#define M_SG_4 SGUI(KC_4) // ScreenShot for mac
+#define M_A_SC LALT(KC_SPC)
+#define M_C_UP LCTL(KC_UP)
+#define M_CS_T RCS(KC_T)
+#define M_CS_SC RCS(KC_SPC)
+#define M_A_GRV LALT(KC_GRV)
+#define M_S_ENT LSFT(KC_ENT)
+
+#define MS_BTN1 KC_MS_BTN1
+#define MS_BTN2 KC_MS_BTN2
+#define MS_BTN3 KC_MS_BTN3
+#define MS_BTN4 KC_MS_BTN4
+#define MS_BTN5 KC_MS_BTN5
+// #define MS_SCR KC_MY_SCR
+#define MS_SCR SCRL_MO
+#define MS_CINC KC_TO_CLICKABLE_INC // マウスレイヤーが有効になるまでの待機時間を増やす
+#define MS_CDEC KC_TO_CLICKABLE_DEC // マウスレイヤーが有効になるまでの待機時間を減らす
+#define MS_S_DV KC_SCROLL_DIR_V // スクロールの縦軸を反転
+#define MS_S_DH KC_SCROLL_DIR_H // スクロールの横軸を反転
+#define MS_L_LK KC_MOUSE_LAYER_LOCK // マウスレイヤーを解除する挙動を無効化する(オンでLayer Switchingで切り替える挙動)
+
+
+#define LW_LNG2 LT(1,KC_LNG2)//LT(1,KC_LNG2)  // lower
+#define RS_LNG1 LT(2,KC_LNG1)//LT(2,KC_LNG1)  // raise
+#define DEL_ALT ALT_T(KC_DEL)//ALT_T(KC_DEL)
 //#define SPC_SFT LSFT_T(KC_SPC)
 #define MS_BTN1 KC_MS_BTN1
 #define MS_BTN2 KC_MS_BTN2
@@ -63,50 +98,53 @@ int16_t mouse_move_count_ratio = 5;     // ポインターの動きを再生す�
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT(
-        KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,             KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,
-        KC_A,    KC_S,    KC_D,    KC_F,    KC_G,             KC_H,    KC_J,    KC_K,    KC_L,    KC_MINS,
-        KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,             KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,
-                 KC_PGUP, DEL_ALT, LW_LNG2, KC_SPC,  MS_BTN1, KC_ENT,  RS_LNG1, KC_BSPC, KC_PGDOWN
+        KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,              KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
+        KC_A,     KC_S,     KC_D,     KC_F,     KC_G,              KC_H,     KC_J,     KC_K,     KC_L,     KC_MINS,
+        KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,              KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,
+                  RGB_MOD,  MT_G_EN,  L2_SPC,   KC_LCTL,  MS_BTN1, MT_S_BS,  L1_ENT,   MT_A_JA,  RGB_RMOD
     ),
     [1] = LAYOUT(
-        KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,          KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC_H,    KC_J,    KC_K,    KC_L,    KC_MINS,
-        KC_GRV,  KC_TILD, KC_NUBS, KC_PIPE, XXXXXXX,          KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,
-                 KC_PGUP, DEL_ALT, LW_LNG2, KC_SPC,  MS_BTN1, KC_ENT,  RS_LNG1, KC_BSPC, KC_PGDOWN
+        KC_BSLS,  KC_CIRC,  KC_EXLM,  KC_AMPR,  KC_PIPE,           KC_AT,    KC_EQL,   KC_PLUS,  KC_ASTR,  KC_PERC,
+        KC_HASH,  KC_DLR,   KC_DQUO,  KC_QUOT,  KC_TILD,           KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,  KC_GRV,
+        KC_LSFT,  KC_COLN,  KC_LPRN,  KC_LCBR,  KC_LBRC,           KC_RBRC,  KC_RCBR,  KC_RPRN,  KC_SCLN,  XXXXXXX,
+                  RGB_MOD,  KC_LALT,  MO(3),    KC_LSFT,  MS_BTN1, XXXXXXX,  XXXXXXX,  XXXXXXX,  RGB_RMOD
     ),
     [2] = LAYOUT(
-        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,             KC_6,    KC_7,    KC_8,    KC_9,    KC_0,
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,            KC_APP,  KC_UP,   KC_EQL,  KC_PLUS, KC_MINS,
-        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,           KC_LEFT, KC_DOWN, KC_RGHT, KC_DOT,  KC_SLSH,
-                 KC_PGUP, DEL_ALT, LW_LNG2, KC_SPC,  MS_BTN1, KC_ENT,  RS_LNG1, KC_BSPC, KC_PGDOWN
+        KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,             KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,
+        KC_1,     KC_2,     KC_3,     KC_4,     KC_5,              KC_6,     KC_7,     KC_8,     KC_9,     KC_0,
+        KC_F11,   XXXXXXX,  KC_LSFT,  XXXXXXX,  KC_TAB,            KC_ESC,   KC_DEL,   _______,  _______,  KC_F12,
+                  RGB_MOD,  XXXXXXX,  XXXXXXX,  XXXXXXX,  MS_BTN1, M_S_ENT,  MO(3),    KC_LCTL,  RGB_RMOD
     ),
     [3] = LAYOUT(
-        KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,             KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,
-        KC_A,    KC_S,    KC_D,    KC_F,    KC_G,             KC_H,    KC_J,    KC_K,    KC_L,    KC_MINS,
-        KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,             KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,
-                 KC_PGUP, DEL_ALT, LW_LNG2, KC_SPC,  MS_BTN1, KC_ENT,  RS_LNG1, KC_BSPC, KC_PGDOWN
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  M_CS_T,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  M_A_GRV,
+        M_SG_4,   XXXXXXX,  M_CS_SC,  M_A_SC,   M_C_UP,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_INS,
+                  RGB_MOD,  _______,  _______,  _______,  MS_BTN1, _______,  EE_CLR,   QK_BOOT,  RGB_RMOD
     ),
     [4] = LAYOUT(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          MS_BTN3, MS_BTN2, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, SCRL_MO, XXXXXXX, XXXXXXX
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  XXXXXXX,  XXXXXXX,  TO(5),
+        KC_LGUI,  XXXXXXX,  XXXXXXX,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC_LSFT,  KC_LCTL,  XXXXXXX,  MS_BTN5,  XXXXXXX,           XXXXXXX,  MS_BTN5,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                  XXXXXXX,  TO(0),    TO(0),    MS_SCR,   XXXXXXX, MS_SCR,   TO(0),    TO(0),    XXXXXXX
     ),
     [5] = LAYOUT(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX    ),
+        KC_TG_OS, XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  MS_S_DV,  MS_CINC,  SCRL_IN,
+        KC_LGUI,  XXXXXXX,  XXXXXXX,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  MS_S_DH,  MS_CDEC,  CPI_SW,
+        KC_LSFT,  XXXXXXX,  RGB_TOG,  MS_BTN5,  XXXXXXX,           XXXXXXX,  MS_BTN5,  MS_L_LK,  ROT_L15,  ROT_R15,
+                  XXXXXXX,  EE_CLR,   TO(0),    MS_SCR,   XXXXXXX, MS_SCR,   TO(0),    QK_BOOT,  XXXXXXX
+    ),
     [6] = LAYOUT(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX    ),
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX
+    ),
     [7] = LAYOUT(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX    )
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX
+    )
 };
 
 
@@ -195,8 +233,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 #ifdef RGB_MATRIX_ENABLE
 
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) { 
-    int is_layer = get_highest_layer(layer_state|default_layer_state);  
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    int is_layer = get_highest_layer(layer_state|default_layer_state);
     HSV hsv = {0, 255, rgblight_get_val()};
     if (is_layer == 1) {
       hsv.h = 128; //CYAN
@@ -214,12 +252,13 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       hsv.h = 191; //PURPLE
     }
     RGB rgb = hsv_to_rgb(hsv);
- 
+
     for (uint8_t i = led_min; i <= led_max; i++) {
         if (HAS_FLAGS(g_led_config.flags[i], 0x02)) {
           rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
     }
+    return false;
 };
 
 #endif
@@ -268,7 +307,7 @@ bool is_clickable_mode(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    
+
     switch (keycode) {
         case KC_MS_BTN1:
         case KC_MS_BTN2:
@@ -280,7 +319,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             // どこのビットを対象にするか。 Which bits are to be targeted?
             uint8_t btn = 1 << (keycode - KC_MS_BTN1);
-            
+
             if (record->event.pressed) {
                 // ビットORは演算子の左辺と右辺の同じ位置にあるビットを比較して、両方のビットのどちらかが「1」の場合に「1」にします。
                 // Bit OR compares bits in the same position on the left and right sides of the operator and sets them to "1" if either of both bits is "1".
@@ -317,22 +356,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if  (record->event.pressed) {
                 disable_click_layer();
             }
-        
+
     }
-   
+
     return true;
 }
 
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    
+
     int16_t current_x = mouse_report.x;
     int16_t current_y = mouse_report.y;
     int16_t current_h = 0;
     int16_t current_v = 0;
 
     if (current_x != 0 || current_y != 0) {
-        
+
         switch (state) {
             case CLICKABLE:
                 click_timer = timer_read();
@@ -365,7 +404,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
                             scroll_v_mouse_interval_counter -= scroll_v_threshold;
                             rep_v -= scroll_v_threshold;
                         }
-                        
+
                     }
                 } else {
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
-#include "config_common.h"
+// #include "config_common.h"
 #define OLED_FONT_H "keyboards/aki27/cocot36plus/lib/glcdfont.c"
 
 
@@ -16,9 +16,9 @@
 
 
 /* tapping term */
-#define TAPPING_FORCE_HOLD
+// #define TAPPING_FORCE_HOLD
 #define TAPPING_TERM 200
-#define IGNORE_MOD_TAP_INTERRUPT
+// #define IGNORE_MOD_TAP_INTERRUPT
 
 
 /* Encoder */
@@ -70,7 +70,7 @@
 
 
 /* RGB MATRIX */
-#define DRIVER_LED_TOTAL 45
+#define RGB_MATRIX_LED_COUNT 45
 
 #ifdef RGB_MATRIX_ENABLE
   #define RGB_MATRIX_KEYPRESSES // reacts to keypresses
@@ -111,7 +111,7 @@
 #    define RP_I2C_USE_I2C0 FALSE
 #    undef RP_I2C_USE_I2C1
 #    define RP_I2C_USE_I2C1 TRUE
-#    define I2C_DRIVER I2CD2
+#    define I2C_DRIVER I2CD1
 #    define I2C1_SDA_PIN GP26
 #    define I2C1_SCL_PIN GP27
 #endif
