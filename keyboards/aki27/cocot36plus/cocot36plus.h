@@ -41,6 +41,8 @@ typedef union {
         uint8_t rotation_angle;
         int8_t scrl_inv;
         bool scrl_mode :1;
+        bool mouse_scroll_v_reverse :1;
+        bool mouse_scroll_h_reverse :1;
         report_mouse_t last_mouse;
     };
 } cocot_config_t;
@@ -55,8 +57,6 @@ enum cocot_keycodes {
     SCRL_MO,
     SCRL_TO,
     SCRL_IN,
-    MS_CLIN, // マウスレイヤーが有効になるまでの待機時間を増やす
-    MS_CLDE, // マウスレイヤーが有効になるまでの待機時間を減らす
     MS_SLDV, // スクロールの縦軸を反転
     MS_SLDH, // スクロールの横軸を反転
     MS_L_LK, // マウスレイヤーを解除する挙動を無効化する(オンにするとLayer Switchingで切り替える挙動)

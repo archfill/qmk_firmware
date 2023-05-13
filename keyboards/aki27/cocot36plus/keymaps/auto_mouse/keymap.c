@@ -115,8 +115,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                   XXXXXXX,  TO(0),    TO(0),    MS_SCR,   XXXXXXX, MS_SCR,   TO(0),    TO(0),    XXXXXXX
     ),
     [5] = LAYOUT(
-        KC_TG_OS, XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  MS_SLDV,  MS_CLIN,  SCRL_IN,
-        KC_LGUI,  XXXXXXX,  XXXXXXX,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  MS_SLDH,  MS_CLDE,  CPI_SW,
+        KC_TG_OS, XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  MS_SLDV,  _______,  SCRL_IN,
+        KC_LGUI,  XXXXXXX,  XXXXXXX,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  MS_SLDH,  _______,  CPI_SW,
         KC_LSFT,  XXXXXXX,  RGB_TOG,  MS_BTN5,  XXXXXXX,           XXXXXXX,  MS_BTN5,  MS_L_LK,  ROT_L15,  ROT_R15,
                   XXXXXXX,  EE_CLR,   TO(0),    MS_SCR,   XXXXXXX, MS_SCR,   TO(0),    QK_BOOT,  XXXXXXX
     ),

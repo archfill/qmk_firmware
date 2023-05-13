@@ -96,9 +96,10 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
         }
 
         // accumulate scroll
-        h_acm += x_rev * cocot_config.scrl_inv;
-        v_acm += y_rev * cocot_config.scrl_inv;
-        // v_acm += y_rev * cocot_config.scrl_inv * (user_config.mouse_scroll_v_reverse ? -1 : 1);
+        // h_acm += x_rev * cocot_config.scrl_inv;
+        // v_acm += y_rev * cocot_config.scrl_inv;
+        h_acm += x_rev * cocot_config.scrl_inv * (cocot_config.mouse_scroll_h_reverse ? -1 : 1);
+        v_acm += y_rev * cocot_config.scrl_inv * (cocot_config.mouse_scroll_v_reverse ? -1 : 1);
 
         int8_t h_rev = h_acm >> scrl_div_array[cocot_config.scrl_div];
         int8_t v_rev = v_acm >> scrl_div_array[cocot_config.scrl_div];
@@ -189,28 +190,17 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
             case SCRL_TO:
                 cocot_config.scrl_mode ^= 1;
                 break;
-            // case MS_CLIN:
-            //     user_config.to_clickable_movement += 5; // user_config.to_clickable_time += 10;
-            //     eeconfig_update_user(user_config.raw);
-            //     break;
-            // case MS_CLDE:
-            //     user_config.to_clickable_movement -= 5; // user_config.to_clickable_time -= 10;
-            //     if (user_config.to_clickable_movement < 5) {
-            //         user_config.to_clickable_movement = 5;
-            //     }
-            //     eeconfig_update_user(user_config.raw);
-            //     break;
-            // case MS_SLDV:
-            //     user_config.mouse_scroll_v_reverse = !user_config.mouse_scroll_v_reverse;
-            //     eeconfig_update_user(user_config.raw);
-            //     break;
-            // case MS_SLDH:
-            //     user_config.mouse_scroll_h_reverse = !user_config.mouse_scroll_h_reverse;
-            //     eeconfig_update_user(user_config.raw);
-            //     break;
+            case MS_SLDV:
+                cocot_config.mouse_scroll_v_reverse = !cocot_config.mouse_scroll_v_reverse;
+                eeconfig_update_user(cocot_config.raw);
+                break;
+            case MS_SLDH:
+                cocot_config.mouse_scroll_h_reverse = !cocot_config.mouse_scroll_h_reverse;
+                eeconfig_update_user(cocot_config.raw);
+                break;
             // case MS_L_LK:
-            //     user_config.is_mouse_layer_lock = !user_config.is_mouse_layer_lock;
-            //     eeconfig_update_user(user_config.raw);
+            //     cocot_config.is_mouse_layer_lock = !cocot_config.is_mouse_layer_lock;
+            //     eeconfig_update_user(cocot_config.raw);
             //     break;
             default:
                 return true;
@@ -227,6 +217,8 @@ void eeconfig_init_kb(void) {
     cocot_config.rotation_angle = COCOT_ROTATION_DEFAULT;
     cocot_config.scrl_inv = COCOT_SCROLL_INV_DEFAULT;
     cocot_config.scrl_mode = false;
+    cocot_config.mouse_scroll_v_reverse = true;
+    cocot_config.mouse_scroll_h_reverse = true;
     eeconfig_update_kb(cocot_config.raw);
     eeconfig_init_user();
 }
