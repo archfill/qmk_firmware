@@ -97,13 +97,13 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 
         // accumulate scroll
         h_acm += x_rev * cocot_config.scrl_inv;
-        v_acm += y_rev * cocot_config.scrl_inv * -1;
+        v_acm += y_rev * cocot_config.scrl_inv;
+        // v_acm += y_rev * cocot_config.scrl_inv * (user_config.mouse_scroll_v_reverse ? -1 : 1);
 
         int8_t h_rev = h_acm >> scrl_div_array[cocot_config.scrl_div];
         int8_t v_rev = v_acm >> scrl_div_array[cocot_config.scrl_div];
 
         // clear accumulated scroll on assignment
-
         if (h_rev != 0) {
             if (mouse_report.h + h_rev > 127) {
                 h_rev = 127 - mouse_report.h;
@@ -133,60 +133,90 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
     return pointing_device_task_user(mouse_report);
 }
 
-
+bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
+    switch(keycode) {
+        case SCRL_MO:
+            return true;
+        default:
+            return false;
+    }
+    return is_mouse_record_user(keycode, record);
+}
 
 bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     // xprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
-    
+
     if (!process_record_user(keycode, record)) return false;
 
     switch (keycode) {
 #ifndef MOUSEKEY_ENABLE
         // process KC_MS_BTN1~8 by myself
         // See process_action() in quantum/action.c for details.
-        case KC_MS_BTN1 ... KC_MS_BTN8: {
-            extern void register_button(bool, enum mouse_buttons);
-            register_button(record->event.pressed, MOUSE_BTN_MASK(keycode - KC_MS_BTN1));
-            return false;
-        }
+        // case KC_MS_BTN1 ... KC_MS_BTN8: {
+        //     extern void register_button(bool, enum mouse_buttons);
+        //     register_button(record->event.pressed, MOUSE_BTN_MASK(keycode - KC_MS_BTN1));
+        //     return false;
+        // }
 #endif
-
+        case SCRL_MO:
+            cocot_set_scroll_mode(record->event.pressed);
+            return false;
     }
 
-    if (keycode == CPI_SW && record->event.pressed) {
-        cocot_config.cpi_idx = (cocot_config.cpi_idx + 1) % CPI_OPTION_SIZE;
-        eeconfig_update_kb(cocot_config.raw);
-        pointing_device_set_cpi(cpi_array[cocot_config.cpi_idx]);
+    if (record->event.pressed) {
+        switch (keycode) {
+            case CPI_SW:
+                cocot_config.cpi_idx = (cocot_config.cpi_idx + 1) % CPI_OPTION_SIZE;
+                eeconfig_update_kb(cocot_config.raw);
+                pointing_device_set_cpi(cpi_array[cocot_config.cpi_idx]);
+                break;
+            case SCRL_SW:
+                cocot_config.scrl_div = (cocot_config.scrl_div + 1) % SCRL_DIV_SIZE;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
+            case ROT_R15:
+                cocot_config.rotation_angle = (cocot_config.rotation_angle + 1) % ANGLE_SIZE;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
+            case ROT_L15:
+                cocot_config.rotation_angle = (ANGLE_SIZE + cocot_config.rotation_angle - 1) % ANGLE_SIZE;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
+            case SCRL_IN:
+                cocot_config.scrl_inv = - cocot_config.scrl_inv;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
+            case SCRL_TO:
+                cocot_config.scrl_mode ^= 1;
+                break;
+            // case MS_CLIN:
+            //     user_config.to_clickable_movement += 5; // user_config.to_clickable_time += 10;
+            //     eeconfig_update_user(user_config.raw);
+            //     break;
+            // case MS_CLDE:
+            //     user_config.to_clickable_movement -= 5; // user_config.to_clickable_time -= 10;
+            //     if (user_config.to_clickable_movement < 5) {
+            //         user_config.to_clickable_movement = 5;
+            //     }
+            //     eeconfig_update_user(user_config.raw);
+            //     break;
+            // case MS_SLDV:
+            //     user_config.mouse_scroll_v_reverse = !user_config.mouse_scroll_v_reverse;
+            //     eeconfig_update_user(user_config.raw);
+            //     break;
+            // case MS_SLDH:
+            //     user_config.mouse_scroll_h_reverse = !user_config.mouse_scroll_h_reverse;
+            //     eeconfig_update_user(user_config.raw);
+            //     break;
+            // case MS_L_LK:
+            //     user_config.is_mouse_layer_lock = !user_config.is_mouse_layer_lock;
+            //     eeconfig_update_user(user_config.raw);
+            //     break;
+            default:
+                return true;
+        }
+        return false;
     }
-
-    if (keycode == SCRL_SW && record->event.pressed) {
-        cocot_config.scrl_div = (cocot_config.scrl_div + 1) % SCRL_DIV_SIZE;
-        eeconfig_update_kb(cocot_config.raw);
-    }
-    
-    if (keycode == ROT_R15 && record->event.pressed) {
-        cocot_config.rotation_angle = (cocot_config.rotation_angle + 1) % ANGLE_SIZE;
-        eeconfig_update_kb(cocot_config.raw);
-    }
-
-    if (keycode == ROT_L15 && record->event.pressed) {
-        cocot_config.rotation_angle = (ANGLE_SIZE + cocot_config.rotation_angle - 1) % ANGLE_SIZE;
-        eeconfig_update_kb(cocot_config.raw);
-    }
-
-    if (keycode == SCRL_IN && record->event.pressed) {
-        cocot_config.scrl_inv = - cocot_config.scrl_inv;
-        eeconfig_update_kb(cocot_config.raw);
-    }
-
-    if (keycode == SCRL_TO && record->event.pressed) {
-        { cocot_config.scrl_mode ^= 1; }
-    }
-
-    if (keycode == SCRL_MO) {
-        { cocot_config.scrl_mode ^= 1; }
-    }
-
     return true;
 }
 
@@ -311,17 +341,17 @@ void oled_write_layer_state(void) {
     snprintf(buf1, 6, "%4d", cpi);
     snprintf(buf2, 6, "%1d", scroll_div);
     snprintf(buf3, 8, "%2d", abs(angle));
-    
+
     oled_write_P    (get_u8_str(get_highest_layer(layer_state), ' '), false);
-    
+
     oled_write_P(PSTR("/"), false);
-    
+
     if (cocot_get_scroll_mode()){
         oled_write_P(PSTR("S"), false);
     } else{
         oled_write_P(PSTR("C"), false);
     }
-    
+
     /*
     if (state == SCROLLING) {
         oled_write_P(PSTR("S"), false);
@@ -329,7 +359,7 @@ void oled_write_layer_state(void) {
         oled_write_P(PSTR("C"), false);
     }
     */
-    
+
     oled_write_P(PSTR("/"), false);
     oled_write(buf1, false);
     oled_write_P(PSTR("/"), false);

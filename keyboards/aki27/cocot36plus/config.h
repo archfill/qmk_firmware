@@ -5,21 +5,17 @@
 // #include "config_common.h"
 #define OLED_FONT_H "keyboards/aki27/cocot36plus/lib/glcdfont.c"
 
-
 /* VIA */
 #define DYNAMIC_KEYMAP_LAYER_COUNT 8
-
 
 /* key matrix size */
 #define MATRIX_COLS 10
 #define MATRIX_ROWS 4
 
-
 /* tapping term */
-// #define TAPPING_FORCE_HOLD
+#define TAPPING_FORCE_HOLD
 #define TAPPING_TERM 200
-// #define IGNORE_MOD_TAP_INTERRUPT
-
+#define IGNORE_MOD_TAP_INTERRUPT
 
 /* Encoder */
 #define ENCODERS_PAD_A { GP28 }
@@ -34,16 +30,13 @@
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW
 
-
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE 5
-
 
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
 #undef LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
 #undef LOCKING_RESYNC_ENABLE
-
 
 /* RGB LED */
 #define WS2812_PIO_USE_PIO1
@@ -67,7 +60,6 @@
     #define RGBLIGHT_EFFECT_RGB_TEST
     #define RGBLIGHT_EFFECT_ALTERNATING
 #endif
-
 
 /* RGB MATRIX */
 #define RGB_MATRIX_LED_COUNT 45
@@ -103,9 +95,7 @@
 #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_ALL
 #endif
 
-
 /* OLED */
-
 #ifdef OLED_ENABLE
 #    undef RP_I2C_USE_I2C0
 #    define RP_I2C_USE_I2C0 FALSE
@@ -116,9 +106,7 @@
 #    define I2C1_SCL_PIN GP27
 #endif
 
-
 /* Trackball */
-
 #ifdef POINTING_DEVICE_ENABLE
 
 #    undef RP_SPI_USE_SPI0
@@ -136,15 +124,11 @@
 
 #endif
 
-
 #ifndef PMW33XX_CS_PIN
 #    define PMW33XX_CS_PIN GP1
 #endif
 
-
-
 #define POINTING_DEVICE_ROTATION_180
-
 
 /*
  * Feature disable options
@@ -161,3 +145,7 @@
 //#define NO_ACTION_LAYER
 //#define NO_ACTION_TAPPING
 //#define NO_ACTION_ONESHOT
+
+// Automatic Mouse Layer
+#define POINTING_DEVICE_AUTO_MOUSE_ENABLE
+#define AUTO_MOUSE_DEFAULT_LAYER 4

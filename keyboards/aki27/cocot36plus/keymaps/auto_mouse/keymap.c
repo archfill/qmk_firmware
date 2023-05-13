@@ -45,24 +45,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MS_BTN3 KC_MS_BTN3
 #define MS_BTN4 KC_MS_BTN4
 #define MS_BTN5 KC_MS_BTN5
-// #define MS_SCR KC_MY_SCR
-#define MS_SCR SCRL_MO
-#define MS_CINC KC_TO_CLICKABLE_INC // マウスレイヤーが有効になるまでの待機時間を増やす
-#define MS_CDEC KC_TO_CLICKABLE_DEC // マウスレイヤーが有効になるまでの待機時間を減らす
-#define MS_S_DV KC_SCROLL_DIR_V // スクロールの縦軸を反転
-#define MS_S_DH KC_SCROLL_DIR_H // スクロールの横軸を反転
-#define MS_L_LK KC_MOUSE_LAYER_LOCK // マウスレイヤーを解除する挙動を無効化する(オンでLayer Switchingで切り替える挙動)
-
 
 #define LW_LNG2 LT(1,KC_LNG2)//LT(1,KC_LNG2)  // lower
 #define RS_LNG1 LT(2,KC_LNG1)//LT(2,KC_LNG1)  // raise
 #define DEL_ALT ALT_T(KC_DEL)//ALT_T(KC_DEL)
 //#define SPC_SFT LSFT_T(KC_SPC)
-#define MS_BTN1 KC_MS_BTN1
-#define MS_BTN2 KC_MS_BTN2
-#define MS_BTN3 KC_MS_BTN3
-
-
 
 enum click_state {
     NONE = 0,
@@ -119,7 +106,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  M_CS_T,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  M_A_GRV,
         M_SG_4,   XXXXXXX,  M_CS_SC,  M_A_SC,   M_C_UP,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_INS,
-                  RGB_MOD,  _______,  _______,  _______,  MS_BTN1, _______,  EE_CLR,   QK_BOOT,  RGB_RMOD
+                  RGB_MOD,  EE_CLR,   _______,  _______,  MS_BTN1, _______,  EE_CLR,   QK_BOOT,  RGB_RMOD
     ),
     [4] = LAYOUT(
         XXXXXXX,  XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  XXXXXXX,  XXXXXXX,  TO(5),
@@ -128,8 +115,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                   XXXXXXX,  TO(0),    TO(0),    MS_SCR,   XXXXXXX, MS_SCR,   TO(0),    TO(0),    XXXXXXX
     ),
     [5] = LAYOUT(
-        KC_TG_OS, XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  MS_S_DV,  MS_CINC,  SCRL_IN,
-        KC_LGUI,  XXXXXXX,  XXXXXXX,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  MS_S_DH,  MS_CDEC,  CPI_SW,
+        KC_TG_OS, XXXXXXX,  XXXXXXX,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  MS_SLDV,  MS_CLIN,  SCRL_IN,
+        KC_LGUI,  XXXXXXX,  XXXXXXX,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  MS_SLDH,  MS_CLDE,  CPI_SW,
         KC_LSFT,  XXXXXXX,  RGB_TOG,  MS_BTN5,  XXXXXXX,           XXXXXXX,  MS_BTN5,  MS_L_LK,  ROT_L15,  ROT_R15,
                   XXXXXXX,  EE_CLR,   TO(0),    MS_SCR,   XXXXXXX, MS_SCR,   TO(0),    QK_BOOT,  XXXXXXX
     ),
