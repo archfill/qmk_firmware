@@ -39,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define M_CS_SC RCS(KC_SPC)
 #define M_A_GRV LALT(KC_GRV)
 #define M_S_ENT LSFT(KC_ENT)
+#define M_S_TAB LSFT(KC_TAB)
 
 #define MS_BTN1 KC_MS_BTN1
 #define MS_BTN2 KC_MS_BTN2
@@ -50,6 +51,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RS_LNG1 KC_LANG1//LT(2,KC_LANG1)  // raise
 #define DEL_ALT KC_DEL//ALT_T(KC_DEL)
 //#define SPC_SFT LSFT_T(KC_SPC)
+
+// Ignore this key (NOOP)
+// XXXXXXX
+// Use the next lowest non-transparent key
+// _______
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -68,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [2] = LAYOUT(
         KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,             KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,
         KC_1,     KC_2,     KC_3,     KC_4,     KC_5,              KC_6,     KC_7,     KC_8,     KC_9,     KC_0,
-        KC_F11,   XXXXXXX,  KC_LSFT,  XXXXXXX,  KC_TAB,            KC_ESC,   KC_DEL,   _______,  _______,  KC_F12,
+        KC_F11,   XXXXXXX,  XXXXXXX,  M_S_TAB,  KC_TAB,            KC_ESC,   KC_DEL,   _______,  _______,  KC_F12,
                   RGB_MOD,  XXXXXXX,  XXXXXXX,  XXXXXXX,  MS_BTN1, M_S_ENT,  MO(3),    KC_LCTL,  RGB_RMOD
     ),
     [3] = LAYOUT(
