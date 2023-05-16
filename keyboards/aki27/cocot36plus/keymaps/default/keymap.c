@@ -18,39 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 #include "quantum.h"
-
-
-// Layer
-#define L1_ENT LT(1, KC_ENT)
-#define L2_SPC LT(2, KC_SPC)
-// Modifier-Tap
-#define MT_S_JA LSFT_T(KC_LNG1)
-#define MT_G_EN LGUI_T(KC_LNG2)
-#define MT_C_EN LCTL_T(KC_LNG2)
-#define MT_A_SH LALT_T(KC_SLSH)
-#define MT_A_BS LALT_T(KC_BSPC)
-#define MT_A_JA LALT_T(KC_LNG1)
-#define MT_S_BS LSFT_T(KC_BSPC)
-// Modifiers
-#define M_SG_4 SGUI(KC_4) // ScreenShot for mac
-#define M_A_SC LALT(KC_SPC)
-#define M_C_UP LCTL(KC_UP)
-#define M_CS_T RCS(KC_T)
-#define M_CS_SC RCS(KC_SPC)
-#define M_A_GRV LALT(KC_GRV)
-#define M_S_ENT LSFT(KC_ENT)
-#define M_S_TAB LSFT(KC_TAB)
-
-#define MS_BTN1 KC_MS_BTN1
-#define MS_BTN2 KC_MS_BTN2
-#define MS_BTN3 KC_MS_BTN3
-#define MS_BTN4 KC_MS_BTN4
-#define MS_BTN5 KC_MS_BTN5
-
-#define LW_LNG2 KC_LANG2//LT(1,KC_LANG2)  // lower
-#define RS_LNG1 KC_LANG1//LT(2,KC_LANG1)  // raise
-#define DEL_ALT KC_DEL//ALT_T(KC_DEL)
-//#define SPC_SFT LSFT_T(KC_SPC)
+#include "keymap.h"
 
 // Ignore this key (NOOP)
 // XXXXXXX
@@ -152,7 +120,6 @@ void matrix_scan_user(void) {
 
 }
 
-
 layer_state_t layer_state_set_user(layer_state_t state) {
 
     // switch(get_highest_layer(remove_auto_mouse_layer(state, true))) {
@@ -215,7 +182,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return state;
 };
 
-
 #ifdef RGB_MATRIX_ENABLE
 
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
@@ -261,4 +227,79 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+// Tap Dance
+int cur_dance(tap_dance_state_t *state) {
+  if (state->count == 1) {
+    if (!state->pressed) return SINGLE_TAP;
+    else return SINGLE_HOLD;
+  }
+  else if (state->count == 2) {
+    return DOUBLE_TAP;
+  }
+  else return 6; //magic number. At some point this method will expand to work for more presses
+}
 
+//instanalize an instance of 'tap' for the 'x' tap dance.
+static td_tap_t xtap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void x_finished_1(tap_dance_state_t *state, void *user_data) {
+  xtap_state.state = cur_dance(state);
+  switch (xtap_state.state) {
+    case SINGLE_TAP:                     // 単押しで「英数」と「無変換」　Lowerレイヤーがトグルされている場合はレイヤーをオフにする
+        register_code(KC_Q);
+        break;
+    case DOUBLE_TAP:                    // ダブルタップでLowerレイヤーをトグル
+        register_code(KC_ESCAPE);
+        break;
+  }
+}
+
+void x_reset_1(tap_dance_state_t *state, void *user_data) {
+  switch (xtap_state.state) {
+    case SINGLE_TAP:
+        unregister_code(KC_Q);
+        break;
+    case DOUBLE_TAP:
+        unregister_code(KC_ESCAPE);
+        break;
+  }
+  xtap_state.state = 0;
+}
+
+// void x_finished_2(tap_dance_state_t *state, void *user_data) {
+//   xtap_state.state = cur_dance(state);
+//   switch (xtap_state.state) {
+//     case SINGLE_TAP:                     // 単押しで「英数」と「無変換」　Lowerレイヤーがトグルされている場合はレイヤーをオフにする
+//         register_code(KC_BSPC);
+//         break;
+//     case SINGLE_HOLD:                   // 長押しでLowerレイヤーをオンにする
+//         register_code(KC_LALT);
+//         break;
+//     case DOUBLE_TAP:                    // ダブルタップでLowerレイヤーをトグル
+//         register_code(KC_BSPC);
+//         break;
+//   }
+// }
+//
+// void x_reset_2(tap_dance_state_t *state, void *user_data) {
+//   switch (xtap_state.state) {
+//     case SINGLE_TAP:
+//         unregister_code(KC_BSPC);
+//         break;
+//     case SINGLE_HOLD:
+//         unregister_code(KC_LALT);
+//         break;
+//     case DOUBLE_TAP:
+//         unregister_code(KC_BSPC);
+//         break;
+//   }
+//   xtap_state.state = 0;
+// }
+
+tap_dance_action_t tap_dance_actions[] = {
+    [X_TAP_DANCE_1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, x_finished_1, x_reset_1),
+    // [X_TAP_DANCE_2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, x_finished_2, x_reset_2),
+};

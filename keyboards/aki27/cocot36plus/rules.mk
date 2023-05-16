@@ -38,3 +38,5 @@ VIA_ENABLE = yes
 # Disable unnecessary functions to reduce firmware size
 # SPACE_CADET_ENABLE = no
 # MAGIC_ENABLE = no
+
+TAP_DANCE_ENABLE = yes
