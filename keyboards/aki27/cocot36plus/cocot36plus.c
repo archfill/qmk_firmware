@@ -80,7 +80,6 @@ void pointing_device_init_kb(void) {
     pointing_device_set_cpi(cpi_array[cocot_config.cpi_idx]);
 }
 
-
 report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 
     double rad = angle_array[cocot_config.rotation_angle] * (M_PI / 180) * -1;
@@ -210,7 +209,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     return true;
 }
 
-
 void eeconfig_init_kb(void) {
     cocot_config.cpi_idx = COCOT_CPI_DEFAULT;
     cocot_config.scrl_div = COCOT_SCROLL_DIV_DEFAULT;
@@ -223,7 +221,6 @@ void eeconfig_init_kb(void) {
     eeconfig_init_user();
 }
 
-
 void matrix_init_kb(void) {
     // is safe to just read CPI setting since matrix init
     // comes before pointing device init.
@@ -235,7 +232,6 @@ void matrix_init_kb(void) {
     matrix_init_user();
 }
 
-
 bool cocot_get_scroll_mode(void) {
     return cocot_config.scrl_mode;
 }
@@ -243,18 +239,6 @@ bool cocot_get_scroll_mode(void) {
 void cocot_set_scroll_mode(bool mode) {
     cocot_config.scrl_mode = mode;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifdef RGB_MATRIX_ENABLE
     led_config_t g_led_config = { {
@@ -288,14 +272,12 @@ void cocot_set_scroll_mode(bool mode) {
 } };
 #endif
 
-
 // OLED utility
 #ifdef OLED_ENABLE
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     return OLED_ROTATION_0;
 }
-
 
 static const char PROGMEM cocot_logo[] = {
     0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94,
@@ -306,8 +288,6 @@ static const char PROGMEM cocot_logo[] = {
 void render_logo(void) {
     oled_write_P(cocot_logo, false);
 };
-
-
 
 void oled_write_layer_state(void) {
 
@@ -365,12 +345,10 @@ void oled_write_layer_state(void) {
     oled_write(buf3, false);
 }
 
-
 bool oled_task_user(void) {
     render_logo();
     oled_write_layer_state();
     return false;
 }
-
 
 #endif
