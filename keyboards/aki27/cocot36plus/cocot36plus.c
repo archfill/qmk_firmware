@@ -198,7 +198,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
                 eeconfig_update_user(cocot_config.raw);
                 break;
             // case MS_L_LK:
-            //     cocot_config.is_mouse_layer_lock = !cocot_config.is_mouse_layer_lock;
+            //     cocot_config.is_mouse_layer_locked = !cocot_config.is_mouse_layer_locked;
             //     eeconfig_update_user(cocot_config.raw);
             //     break;
             default:
@@ -217,6 +217,8 @@ void eeconfig_init_kb(void) {
     cocot_config.scrl_mode = false;
     cocot_config.mouse_scroll_v_reverse = true;
     cocot_config.mouse_scroll_h_reverse = true;
+    cocot_config.is_mouse_layer_locked = false;
+    cocot_config.is_mac_mode = true;
     eeconfig_update_kb(cocot_config.raw);
     eeconfig_init_user();
 }
@@ -289,6 +291,16 @@ void render_logo(void) {
     oled_write_P(cocot_logo, false);
 };
 
+void render_logo_str(void) {
+    oled_write_P(PSTR("    "), false);
+    oled_write_P(PSTR(" cocot36plus "), true);
+    if (cocot_config.is_mac_mode) {
+        oled_write_P(PSTR(" MAC"), false);
+    } else {
+        oled_write_P(PSTR(" WIN"), false);
+    }
+};
+
 void oled_write_layer_state(void) {
 
     oled_write_P(PSTR("Layer"), false);
@@ -345,9 +357,34 @@ void oled_write_layer_state(void) {
     oled_write(buf3, false);
 }
 
+void oled_mouse_state(void) {
+
+    // Mouse [scroll_v]/[scroll_h]/[mouse_layer_lock]
+    char buf2[6];
+    char buf3[6];
+    char buf4[6];
+    snprintf(buf2, 6, "%1d", cocot_config.mouse_scroll_v_reverse);
+    snprintf(buf3, 6, "%1d", cocot_config.mouse_scroll_h_reverse);
+    snprintf(buf4, 6, "%1d", cocot_config.is_mouse_layer_locked);
+
+    oled_write_P(PSTR("Mouse  "), false);
+    oled_write(buf2, false);
+    oled_write_P(PSTR("/"), false);
+    oled_write(buf3, false);
+    oled_write_P(PSTR("/"), false);
+    oled_write(buf4, false);
+
+    // oled_write_P(PSTR("MV:"), false);
+    // oled_write(get_u8_str(mouse_movement, ' '), false);
+    // oled_write_P(PSTR("/"), false);
+    // oled_write(get_u8_str(cocot_config.to_clickable_movement, ' '), false);
+}
+
 bool oled_task_user(void) {
-    render_logo();
+    render_logo_str();
+    oled_write_P(PSTR("                     "), false);
     oled_write_layer_state();
+    oled_mouse_state();
     return false;
 }
 

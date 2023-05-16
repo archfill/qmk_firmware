@@ -44,6 +44,8 @@ typedef union {
         bool mouse_scroll_v_reverse :1;
         bool mouse_scroll_h_reverse :1;
         report_mouse_t last_mouse;
+        bool is_mouse_layer_locked :1;
+        bool is_mac_mode :1;
     };
 } cocot_config_t;
 
@@ -91,4 +93,5 @@ bool is_clickable_mode(void);
 
 
 void render_logo(void);
+void render_logo_str(void);
 void oled_write_layer_state(void);
