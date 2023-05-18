@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stdio.h>
+#include "quantum.h"
+
 // Layer
 #define L1_ENT LT(1, KC_ENT)
 #define L2_SPC LT(2, KC_SPC)
@@ -33,20 +36,26 @@
 //#define SPC_SFT LSFT_T(KC_SPC)
 
 // Tap Dance
-enum {
-  SINGLE_TAP = 1,
-  SINGLE_HOLD = 2,
-  DOUBLE_TAP = 3,
-};
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_DOUBLE_HOLD,
+    TD_DOUBLE_SINGLE_TAP, // Send two single taps
+    TD_TRIPLE_TAP,
+    TD_TRIPLE_HOLD
+} td_state_t;
 
 typedef struct {
   bool is_press_action;
-  int state;
+  td_state_t state;
 } td_tap_t;
 
 enum {
     X_TAP_DANCE_1,
     // X_TAP_DANCE_2,
 };
-#define TD_Q_E TD(X_TAP_DANCE_1)
+#define KC_TD_1 TD(X_TAP_DANCE_1)
 // #define TD_AB_BS TD(X_TAP_DANCE_2)

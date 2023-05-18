@@ -26,7 +26,7 @@ extern const pointing_device_driver_t pointing_device_driver;
 
 // Invert vertical scroll direction
 #ifndef COCOT_SCROLL_INV_DEFAULT
-#    define COCOT_SCROLL_INV_DEFAULT 1
+#    define COCOT_SCROLL_INV_DEFAULT true
 #endif
 
 #ifndef COCOT_CPI_OPTIONS
@@ -74,7 +74,6 @@ uint16_t angle_array[] = COCOT_ROTATION_ANGLE;
 static int16_t h_acm       = 0;
 static int16_t v_acm       = 0;
 
-
 void pointing_device_init_kb(void) {
     // set the CPI.
     pointing_device_set_cpi(cpi_array[cocot_config.cpi_idx]);
@@ -95,10 +94,10 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
         }
 
         // accumulate scroll
-        // h_acm += x_rev * cocot_config.scrl_inv;
-        // v_acm += y_rev * cocot_config.scrl_inv;
-        h_acm += x_rev * cocot_config.scrl_inv * (cocot_config.mouse_scroll_h_reverse ? -1 : 1);
-        v_acm += y_rev * cocot_config.scrl_inv * (cocot_config.mouse_scroll_v_reverse ? -1 : 1);
+        h_acm += x_rev * (cocot_config.scrl_inv ? 1 : -1);
+        v_acm += y_rev * (cocot_config.scrl_inv ? 1 : -1);
+        // h_acm += x_rev * cocot_config.scrl_inv * (cocot_config.mouse_scroll_h_reverse ? -1 : 1);
+        // v_acm += y_rev * cocot_config.scrl_inv * (cocot_config.mouse_scroll_v_reverse ? -1 : 1);
 
         int8_t h_rev = h_acm >> scrl_div_array[cocot_config.scrl_div];
         int8_t v_rev = v_acm >> scrl_div_array[cocot_config.scrl_div];
@@ -135,6 +134,9 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
     switch(keycode) {
+        case KC_LGUI:
+        case KC_LCTL:
+        case KC_LSFT:
         case SCRL_MO:
             return true;
         default:
@@ -183,24 +185,32 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
                 eeconfig_update_kb(cocot_config.raw);
                 break;
             case SCRL_IN:
-                cocot_config.scrl_inv = - cocot_config.scrl_inv;
+                cocot_config.scrl_inv = !cocot_config.scrl_inv;
                 eeconfig_update_kb(cocot_config.raw);
                 break;
             case SCRL_TO:
                 cocot_config.scrl_mode ^= 1;
                 break;
-            case MS_SLDV:
-                cocot_config.mouse_scroll_v_reverse = !cocot_config.mouse_scroll_v_reverse;
-                eeconfig_update_user(cocot_config.raw);
-                break;
-            case MS_SLDH:
-                cocot_config.mouse_scroll_h_reverse = !cocot_config.mouse_scroll_h_reverse;
-                eeconfig_update_user(cocot_config.raw);
-                break;
-            // case MS_L_LK:
-            //     cocot_config.is_mouse_layer_locked = !cocot_config.is_mouse_layer_locked;
-            //     eeconfig_update_user(cocot_config.raw);
+            // case MS_SLDV:
+            //     cocot_config.mouse_scroll_v_reverse = !cocot_config.mouse_scroll_v_reverse;
+            //     eeconfig_update_kb(cocot_config.raw);
             //     break;
+            // case MS_SLDH:
+            //     cocot_config.mouse_scroll_h_reverse = !cocot_config.mouse_scroll_h_reverse;
+            //     eeconfig_update_kb(cocot_config.raw);
+            //     break;
+            case MS_L_LK:
+                cocot_config.is_mouse_layer_locked = !cocot_config.is_mouse_layer_locked;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
+            case KC_TG_OS:
+                cocot_config.is_mac_mode = !cocot_config.is_mac_mode;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
+            case KC_TG_AM:
+                cocot_config.is_auto_mouse = !cocot_config.is_auto_mouse;
+                eeconfig_update_kb(cocot_config.raw);
+                break;
             default:
                 return true;
         }
@@ -215,9 +225,10 @@ void eeconfig_init_kb(void) {
     cocot_config.rotation_angle = COCOT_ROTATION_DEFAULT;
     cocot_config.scrl_inv = COCOT_SCROLL_INV_DEFAULT;
     cocot_config.scrl_mode = false;
-    cocot_config.mouse_scroll_v_reverse = true;
-    cocot_config.mouse_scroll_h_reverse = true;
+    // cocot_config.mouse_scroll_v_reverse = true;
+    // cocot_config.mouse_scroll_h_reverse = true;
     cocot_config.is_mouse_layer_locked = false;
+    cocot_config.is_auto_mouse = true;
     cocot_config.is_mac_mode = true;
     eeconfig_update_kb(cocot_config.raw);
     eeconfig_init_user();
@@ -360,17 +371,29 @@ void oled_write_layer_state(void) {
 void oled_mouse_state(void) {
 
     // Mouse [scroll_v]/[scroll_h]/[mouse_layer_lock]
-    char buf2[6];
-    char buf3[6];
+    // char buf2[6];
+    // char buf3[6];
     char buf4[6];
-    snprintf(buf2, 6, "%1d", cocot_config.mouse_scroll_v_reverse);
-    snprintf(buf3, 6, "%1d", cocot_config.mouse_scroll_h_reverse);
+    // snprintf(buf2, 6, "%1d", cocot_config.mouse_scroll_v_reverse);
+    // snprintf(buf3, 6, "%1d", cocot_config.mouse_scroll_h_reverse);
     snprintf(buf4, 6, "%1d", cocot_config.is_mouse_layer_locked);
 
     oled_write_P(PSTR("Mouse  "), false);
-    oled_write(buf2, false);
+    // oled_write(buf2, false);
+    // oled_write_P(PSTR("/"), false);
+    // oled_write(buf3, false);
+    // oled_write_P(PSTR("/"), false);
+    if (cocot_config.is_auto_mouse) {
+        oled_write_P(PSTR("AT"), false);
+    } else {
+        oled_write_P(PSTR("NL"), false);
+    }
     oled_write_P(PSTR("/"), false);
-    oled_write(buf3, false);
+    if (cocot_config.scrl_inv) {
+        oled_write_P(PSTR("R"), false);
+    } else {
+        oled_write_P(PSTR("N"), false);
+    }
     oled_write_P(PSTR("/"), false);
     oled_write(buf4, false);
 

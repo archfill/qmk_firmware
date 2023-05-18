@@ -31,7 +31,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,              KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
         KC_A,     KC_S,     KC_D,     KC_F,     KC_G,              KC_H,     KC_J,     KC_K,     KC_L,     KC_MINS,
         KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,              KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,
-                  RGB_MOD,  MT_G_EN,  L2_SPC,   KC_LCTL,  MS_BTN1, MT_S_BS,  L1_ENT,   MT_A_JA,  RGB_RMOD
+                  RGB_MOD,  KC_TD_1,  L2_SPC,   MO(5),    MS_BTN1, MT_S_BS,  L1_ENT,   MT_A_JA,  RGB_RMOD
     ),
     [1] = LAYOUT(
         KC_BSLS,  KC_CIRC,  KC_EXLM,  KC_AMPR,  KC_PIPE,           KC_AT,    KC_EQL,   KC_PLUS,  KC_ASTR,  KC_PERC,
@@ -58,8 +58,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                   _______,  _______,  _______,  SCRL_MO,  XXXXXXX, SCRL_MO,  _______,  _______,  _______
     ),
     [5] = LAYOUT(
-        KC_TG_OS, _______,  _______,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  MS_SLDV,  _______,  SCRL_IN,
-        KC_LGUI,  _______,  _______,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  MS_SLDH,  _______,  CPI_SW,
+        KC_TG_OS, _______,  _______,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  _______,  KC_TG_AM, SCRL_IN,
+        KC_TD_1,  _______,  _______,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  _______,  _______,  CPI_SW,
         KC_LSFT,  _______,  RGB_TOG,  MS_BTN5,  _______,           _______,  MS_BTN5,  MS_L_LK,  ROT_L15,  ROT_R15,
                   RGB_MOD,  EE_CLR,   TO(0),    SCRL_MO,  XXXXXXX, SCRL_MO,  TO(0),    QK_BOOT,  RGB_RMOD
     ),
@@ -149,32 +149,32 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         break;
     case 3:
         //rgblight_sethsv_range(HSV_CYAN, 0, 9);
-        set_auto_mouse_enable(true);
+        set_auto_mouse_enable(cocot_config.is_auto_mouse);
         cocot_set_scroll_mode(false);
         break;
     case 4:
         //rgblight_sethsv_range(HSV_AZURE, 0, 9);
-        set_auto_mouse_enable(true);
+        set_auto_mouse_enable(cocot_config.is_auto_mouse);
         cocot_set_scroll_mode(false);
         break;
     case 5:
         //rgblight_sethsv_range(HSV_BLUE, 0, 9);
-        set_auto_mouse_enable(true);
+        set_auto_mouse_enable(cocot_config.is_auto_mouse);
         cocot_set_scroll_mode(false);
         break;
     case 6:
         //rgblight_sethsv_range(HSV_MAGENTA, 0, 9);
-        set_auto_mouse_enable(true);
+        set_auto_mouse_enable(cocot_config.is_auto_mouse);
         cocot_set_scroll_mode(false);
         break;
     case 7:
         //rgblight_sethsv_range(HSV_MAGENTA, 0, 9);
-        set_auto_mouse_enable(true);
+        set_auto_mouse_enable(cocot_config.is_auto_mouse);
         cocot_set_scroll_mode(false);
         break;
     default:
         //rgblight_sethsv_range(HSV_RED, 0, 9);
-        set_auto_mouse_enable(true);
+        set_auto_mouse_enable(cocot_config.is_auto_mouse);
         cocot_set_scroll_mode(false);
         break;
     }
@@ -216,7 +216,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
 void pointing_device_init_user(void) {
     // set_auto_mouse_layer(<mouse_layer>); // only required if AUTO_MOUSE_DEFAULT_LAYER is not set to index of <mouse_layer>
-    set_auto_mouse_enable(true);         // always required before the auto mouse feature will work
+    set_auto_mouse_enable(cocot_config.is_auto_mouse);         // always required before the auto mouse feature will work
 }
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
@@ -228,45 +228,103 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 // Tap Dance
-int cur_dance(tap_dance_state_t *state) {
-  if (state->count == 1) {
-    if (!state->pressed) return SINGLE_TAP;
-    else return SINGLE_HOLD;
-  }
-  else if (state->count == 2) {
-    return DOUBLE_TAP;
-  }
-  else return 6; //magic number. At some point this method will expand to work for more presses
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        // Key has not been interrupted, but the key is still held. Means you want to send a 'HOLD'.
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) {
+        // TD_DOUBLE_SINGLE_TAP is to distinguish between typing "pepper", and actually wanting a double tap
+        // action when hitting 'pp'. Suggested use case for this return value is when you want to send two
+        // keystrokes of the key, and not the 'double tap' action/macro.
+        if (state->interrupted) return TD_DOUBLE_SINGLE_TAP;
+        else if (state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_DOUBLE_TAP;
+    }
+
+    // Assumes no one is trying to type the same letter three times (at least not quickly).
+    // If your tap dance key is 'KC_W', and you want to type "www." quickly - then you will need to add
+    // an exception here to return a 'TD_TRIPLE_SINGLE_TAP', and define that enum just like 'TD_DOUBLE_SINGLE_TAP'
+    if (state->count == 3) {
+        if (state->interrupted || !state->pressed) return TD_TRIPLE_TAP;
+        else return TD_TRIPLE_HOLD;
+    } else return TD_UNKNOWN;
 }
 
 //instanalize an instance of 'tap' for the 'x' tap dance.
 static td_tap_t xtap_state = {
-  .is_press_action = true,
-  .state = 0
+    .is_press_action = true,
+    .state = TD_NONE
 };
+
+// void x_finished_x(tap_dance_state_t *state, void *user_data) {
+//   xtap_state.state = cur_dance(state);
+//   switch (xtap_state.state) {
+//     case SINGLE_TAP:                     // 単押しで「英数」と「無変換」　Lowerレイヤーがトグルされている場合はレイヤーをオフにする
+//         register_code(KC_BSPC);
+//         break;
+//     case SINGLE_HOLD:                   // 長押しでLowerレイヤーをオンにする
+//         register_code(KC_LALT);
+//         break;
+//     case DOUBLE_TAP:                    // ダブルタップでLowerレイヤーをトグル
+//         register_code(KC_BSPC);
+//         break;
+//   }
+// }
+//
+// void x_reset_x(tap_dance_state_t *state, void *user_data) {
+//   switch (xtap_state.state) {
+//     case SINGLE_TAP:
+//         unregister_code(KC_BSPC);
+//         break;
+//     case SINGLE_HOLD:
+//         unregister_code(KC_LALT);
+//         break;
+//     case DOUBLE_TAP:
+//         unregister_code(KC_BSPC);
+//         break;
+//   }
+//   xtap_state.state = 0;
+// }
 
 void x_finished_1(tap_dance_state_t *state, void *user_data) {
   xtap_state.state = cur_dance(state);
   switch (xtap_state.state) {
-    case SINGLE_TAP:                     // 単押しで「英数」と「無変換」　Lowerレイヤーがトグルされている場合はレイヤーをオフにする
-        register_code(KC_Q);
+    case TD_SINGLE_TAP:
+        register_code(cocot_config.is_mac_mode ? KC_LNG2 : KC_LNG2);
+        // register_code(KC_LGUI);
         break;
-    case DOUBLE_TAP:                    // ダブルタップでLowerレイヤーをトグル
-        register_code(KC_ESCAPE);
+    case TD_SINGLE_HOLD:
+        register_code(cocot_config.is_mac_mode ? KC_LGUI : KC_LCTL);
+        // register_code(KC_LGUI);
+        break;
+    case TD_DOUBLE_TAP:
+        register_code(cocot_config.is_mac_mode ? KC_LNG2 : KC_LNG2);
+        // register_code(KC_LGUI);
+        break;
+    default:
         break;
   }
 }
 
 void x_reset_1(tap_dance_state_t *state, void *user_data) {
   switch (xtap_state.state) {
-    case SINGLE_TAP:
-        unregister_code(KC_Q);
+    case TD_SINGLE_TAP:
+        unregister_code(cocot_config.is_mac_mode ? KC_LNG2 : KC_LNG2);
+        // unregister_code(KC_LGUI);
         break;
-    case DOUBLE_TAP:
-        unregister_code(KC_ESCAPE);
+    case TD_SINGLE_HOLD:
+        unregister_code(cocot_config.is_mac_mode ? KC_LGUI : KC_LCTL);
+        // unregister_code(KC_LGUI);
+        break;
+    case TD_DOUBLE_TAP:
+        unregister_code(cocot_config.is_mac_mode ? KC_LNG2 : KC_LNG2);
+        // unregister_code(KC_LGUI);
+        break;
+    default:
         break;
   }
-  xtap_state.state = 0;
+  xtap_state.state = TD_NONE;
 }
 
 // void x_finished_2(tap_dance_state_t *state, void *user_data) {

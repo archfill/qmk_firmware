@@ -39,13 +39,14 @@ typedef union {
         uint8_t cpi_idx;
         uint8_t scrl_div;
         uint8_t rotation_angle;
-        int8_t scrl_inv;
+        bool scrl_inv :1;
         bool scrl_mode :1;
-        bool mouse_scroll_v_reverse :1;
-        bool mouse_scroll_h_reverse :1;
-        report_mouse_t last_mouse;
+        // bool mouse_scroll_v_reverse :1;
+        // bool mouse_scroll_h_reverse :1;
         bool is_mouse_layer_locked :1;
+        bool is_auto_mouse :1;
         bool is_mac_mode :1;
+        // report_mouse_t last_mouse;
     };
 } cocot_config_t;
 
@@ -59,12 +60,11 @@ enum cocot_keycodes {
     SCRL_MO,
     SCRL_TO,
     SCRL_IN,
-    MS_SLDV, // スクロールの縦軸を反転
-    MS_SLDH, // スクロールの横軸を反転
+    // MS_SLDV, // スクロールの縦軸を反転
+    // MS_SLDH, // スクロールの横軸を反転
     MS_L_LK, // マウスレイヤーを解除する挙動を無効化する(オンにするとLayer Switchingで切り替える挙動)
     KC_TG_OS, // OS切り替え
-    KC_TG_01,
-    KC_TG_02,
+    KC_TG_AM, // 自動マウスモードの切り替え
     COCOT_SAFE_RANGE,
 };
 
@@ -75,8 +75,6 @@ enum cocot_keycodes {
 // #define SCRL_MO QK_KB_4
 // #define SCRL_TO QK_KB_5
 // #define SCRL_IN QK_KB_6
-
-
 
 bool encoder_update_user(uint8_t index, bool clockwise);
 bool encoder_update_kb(uint8_t index, bool clockwise);
@@ -95,3 +93,4 @@ bool is_clickable_mode(void);
 void render_logo(void);
 void render_logo_str(void);
 void oled_write_layer_state(void);
+void oled_mouse_state(void);
