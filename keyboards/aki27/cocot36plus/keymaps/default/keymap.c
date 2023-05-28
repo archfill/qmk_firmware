@@ -30,8 +30,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(
         KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,              KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
         KC_A,     KC_S,     KC_D,     KC_F,     KC_G,              KC_H,     KC_J,     KC_K,     KC_L,     KC_MINS,
-        KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,              KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,
-                  RGB_MOD,  KC_TD_1,  L2_SPC,   MO(5),    MS_BTN1, MT_S_BS,  L1_ENT,   MT_A_JA,  RGB_RMOD
+        KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,              KC_N,     KC_M,     KC_COMM,  KC_DOT,   MT_A_SH,
+                  RGB_MOD,  MT_G_EN,  L2_SPC,   KC_LCTL,  MS_BTN1, MT_S_BS,  L1_ENT,   L6_JA,    RGB_RMOD
     ),
     [1] = LAYOUT(
         KC_BSLS,  KC_CIRC,  KC_EXLM,  KC_AMPR,  KC_PIPE,           KC_AT,    KC_EQL,   KC_PLUS,  KC_ASTR,  KC_PERC,
@@ -53,20 +53,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [4] = LAYOUT(
         _______,  _______,  _______,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  _______,  _______,  TO(5),
-        _______,  _______,  _______,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  _______,  _______,  _______,
-        _______,  _______,  _______,  MS_BTN5,  _______,           _______,  MS_BTN5,  _______,  _______,  _______,
+        KC_LGUI,  _______,  _______,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  _______,  _______,  _______,
+        KC_LSFT,  KC_LCTL,  _______,  MS_BTN5,  _______,           _______,  MS_BTN5,  _______,  _______,  _______,
                   _______,  _______,  _______,  SCRL_MO,  XXXXXXX, SCRL_MO,  _______,  _______,  _______
     ),
     [5] = LAYOUT(
         KC_TG_OS, _______,  _______,  MS_BTN2,  MS_BTN3,           MS_BTN3,  MS_BTN2,  _______,  KC_TG_AM, SCRL_IN,
-        KC_TD_1,  _______,  _______,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  _______,  _______,  CPI_SW,
-        KC_LSFT,  _______,  RGB_TOG,  MS_BTN5,  _______,           _______,  MS_BTN5,  MS_L_LK,  ROT_L15,  ROT_R15,
+        KC_LGUI,  _______,  _______,  MS_BTN4,  MS_BTN1,           MS_BTN1,  MS_BTN4,  _______,  _______,  CPI_SW,
+        KC_LSFT,  KC_LCTL,  RGB_TOG,  MS_BTN5,  _______,           _______,  MS_BTN5,  MS_L_LK,  ROT_L15,  ROT_R15,
                   RGB_MOD,  EE_CLR,   TO(0),    SCRL_MO,  XXXXXXX, SCRL_MO,  TO(0),    QK_BOOT,  RGB_RMOD
     ),
     [6] = LAYOUT(
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_MS_U,  XXXXXXX,           MS_BTN3,  MS_BTN2,  XXXXXXX,  KC_TG_AM, XXXXXXX,
+        XXXXXXX,  KC_WH_U,  KC_MS_L,  KC_MS_D,  KC_MS_R,           MS_BTN1,  MS_BTN4,  KC_LGUI,  KC_LSFT,  KC_LCTL,
+        KC_WH_L,  KC_WH_D,  KC_WH_R,  XXXXXXX,  XXXXXXX,           XXXXXXX,  MS_BTN5,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX
     ),
     [7] = LAYOUT(

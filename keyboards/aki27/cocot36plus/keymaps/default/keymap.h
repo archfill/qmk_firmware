@@ -6,6 +6,7 @@
 // Layer
 #define L1_ENT LT(1, KC_ENT)
 #define L2_SPC LT(2, KC_SPC)
+#define L6_JA LT(6, KC_LNG1)
 // Modifier-Tap
 #define MT_S_JA LSFT_T(KC_LNG1)
 #define MT_G_EN LGUI_T(KC_LNG2)
@@ -14,6 +15,7 @@
 #define MT_A_BS LALT_T(KC_BSPC)
 #define MT_A_JA LALT_T(KC_LNG1)
 #define MT_S_BS LSFT_T(KC_BSPC)
+#define MT_S_SH LSFT_T(KC_SLSH)
 // Modifiers
 #define M_SG_4 SGUI(KC_4) // ScreenShot for mac
 #define M_A_SC LALT(KC_SPC)
